@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Admin · Plantain Boy Experience</title><link rel="icon" href="img/logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
+<style>
+body{padding:20px 14px 80px;max-width:900px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.top img{height:46px;border-radius:10px}
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.st div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.st b{display:block;font-family:'Bagel Fat One';font-weight:400;font-size:28px;color:var(--y)}.st span{font-size:12px;color:var(--mut)}
+.bar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.bar input{flex:1;min-width:200px;margin:0}
+.bar .btn{padding:12px 20px;font-size:14px;box-shadow:none}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{background:#1a1a1a;color:var(--cream);border:1px solid #333;border-radius:99px;padding:8px 16px;font:500 14px 'DM Sans';cursor:pointer}.tabs .on{background:var(--y);color:#000;font-weight:700}
+.o{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.o h4{font-size:17px}.o small{color:var(--mut);display:block;word-break:break-all}
+.tk{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px dashed #333;margin-top:10px;padding-top:10px;font-size:14px}
+.tk .btn{padding:8px 16px;font-size:13px;box-shadow:none}.tk .done{color:#7be07b;font-weight:700;text-align:right}
+.tk .undo{background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;font-size:12px;display:block;margin-left:auto}
+#login{max-width:360px;margin:80px auto;text-align:center}
+#app{display:none}
+#scanbox{display:none;margin-bottom:14px}#scanbox video{width:100%;border-radius:16px;background:#000}
+#toast{position:fixed;left:12px;right:12px;bottom:14px;max-width:560px;margin:auto;border-radius:18px;padding:18px;font-weight:700;display:none;z-index:9;font-size:17px;box-shadow:0 10px 40px #000}
+#warn{background:#5a3b00;border-radius:12px;padding:12px;margin-bottom:14px;display:none}
+@media(max-width:600px){.st{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<div id="login"><img src="img/logo.png" style="width:150px;margin:0 auto 10px;border-radius:16px"><h1 class="d" style="font-size:30px;margin-bottom:14px">Admin</h1>
+<input id="key" type="password" placeholder="Admin key"><button class="btn" id="lg" style="width:100%">Sign in</button><div class="msg err" id="lmsg"></div></div>
+
+<div id="app">
+  <div class="top"><div style="display:flex;align-items:center;gap:12px"><img src="img/logo.png"><h1 class="d" style="font-size:26px">Check-in</h1></div><button class="btn ghost" id="out" style="padding:8px 16px;font-size:13px">Sign out</button></div>
+  <div id="warn"></div>
+  <div class="st"><div><b id="sTot">0</b><span>Tickets sold</span></div><div><b id="sIn">0</b><span>Checked in</span></div><div><b id="sLeft">0</b><span>Not yet in</span></div><div><b id="sRev">₦0</b><span>Revenue</span></div></div>
+  <div class="bar"><button class="btn o" id="scan">Scan QR</button><button class="btn ghost" id="refresh">Refresh</button></div>
+  <div id="scanbox"><video id="v" playsinline muted></video><button class="btn ghost" id="stop" style="margin-top:8px;width:100%;padding:10px">Close camera</button></div>
+  <div class="bar"><input id="q" placeholder="Search reference, ticket code, name, email or phone…"></div>
+  <div class="tabs"><button data-f="all" class="on">All</button><button data-f="out">Not checked in</button><button data-f="in">Checked in</button></div>
+  <div id="list"></div>
+</div>
+<div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);let KEY=sessionStorage.k||'',ORDERS=[],FILTER='all',stream=null,busy=false;
+const naira=n=>'₦'+Number(n).toLocaleString('en-NG');
+const api=(u,b)=>fetch(u,{method:b?'POST':'GET',headers:{'x-admin-key':KEY,'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined}).then(async r=>{let j;try{j=await r.json()}catch{j={error:'Server returned status '+r.status+' (the api folder is missing or not deployed)'}}return{ok:r.ok,s:r.status,j}}).catch(e=>({ok:false,s:0,j:{error:'Could not reach the server: '+e.message}}));
+async function load(){
+  $('lmsg').textContent='Checking...';
+  const r=await api('/api/admin/orders');$('lmsg').textContent='';
+  if(r.s===401){sessionStorage.removeItem('k');$('app').style.display='none';$('login').style.display='block';$('lmsg').textContent='Wrong admin key';return false}
+  if(!r.ok){$('lmsg').textContent='Error '+r.s+': '+(r.j.error||'')+(r.j.detail?' - '+r.j.detail:'');return false}
+  $('login').style.display='none';$('app').style.display='block';ORDERS=r.j.orders;
+  $('warn').style.display=r.j.dbReady?'none':'block';$('warn').textContent='Database not connected — check-in is disabled. Add the Upstash Redis env vars on Vercel (see README).';
+  render();return true;
+}
+function render(){
+  const q=$('q').value.trim().toLowerCase();let tot=0,inn=0,rev=0;
+  ORDERS.forEach(o=>{rev+=o.amount;o.tickets.forEach(t=>{tot++;if(t.checkedInAt)inn++})});
+  $('sTot').textContent=tot;$('sIn').textContent=inn;$('sLeft').textContent=tot-inn;$('sRev').textContent=naira(rev);
+  const rows=ORDERS.filter(o=>{
+    if(q&&!(o.reference+o.name+o.email+o.phone+o.tickets.map(t=>t.code).join(' ')).toLowerCase().includes(q))return false;
+    const ins=o.tickets.filter(t=>t.checkedInAt).length;
+    if(FILTER==='out')return ins<o.qty;if(FILTER==='in')return ins>0;return true;
+  }).sort((a,b)=>String(b.paidAt).localeCompare(String(a.paidAt)));
+  $('list').innerHTML=rows.map(o=>`<div class="o"><h4>${esc(o.name)} · ${esc(o.tier)} × ${o.qty}</h4><small>${esc(o.reference)}</small><small>${esc(o.email||'')} ${esc(o.phone||'')} · ${naira(o.amount)}</small>
+    ${o.tickets.map(t=>`<div class="tk"><span>Ticket ${t.index}/${o.qty} · <code>${t.code}</code></span>${t.checkedInAt?`<span class="done">In at ${new Date(t.checkedInAt).toLocaleTimeString()}<button class="undo" data-r="${o.reference}" data-i="${t.index}" data-u="1">undo</button></span>`:`<button class="btn" data-r="${o.reference}" data-i="${t.index}">Check in</button>`}</div>`).join('')}</div>`).join('')||'<p style="color:var(--mut)">No tickets found.</p>';
+}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(c,t){const e=$('toast');e.style.display='block';e.style.background=c;e.innerHTML=t;clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',5000)}
+async function doCheck(body){
+  const {j}=await api('/api/admin/checkin',body);const who=j.name?`<br>${esc(j.name)} — ${esc(j.tier)} (${j.ticket})`:'';
+  if(j.status==='ok')toast('#146c2e','CHECKED IN'+who);
+  else if(j.status==='duplicate')toast('#a35a00','ALREADY CHECKED IN'+who+`<br><small>at ${new Date(j.checkedInAt).toLocaleString()}</small>`);
+  else if(j.status==='undone')toast('#333','Check-in undone'+who);
+  else toast('#8b1a1a',''+(j.error||'Invalid'));
+  await load();return j;
+}
+$('list').onclick=e=>{const b=e.target.closest('button[data-r]');if(!b)return;doCheck({reference:b.dataset.r,index:b.dataset.i,undo:!!b.dataset.u})};
+$('q').oninput=render;$('refresh').onclick=load;
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');FILTER=b.dataset.f;render()});
+$('lg').onclick=async()=>{KEY=$('key').value;sessionStorage.k=KEY;await load()};
+$('key').onkeydown=e=>{if(e.key==='Enter')$('lg').click()};
+$('out').onclick=()=>{sessionStorage.removeItem('k');location.reload()};
+// QR scanning (Chrome/Android/Safari 17+). Falls back to typing the code in the search box.
+async function startScan(){
+  if(!('BarcodeDetector' in window))return toast('#8b1a1a','Camera scanning not supported in this browser. Use Chrome, or type the code in the search box.');
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch{return toast('#8b1a1a','Camera permission denied')}
+  const v=$('v');v.srcObject=stream;$('scanbox').style.display='block';await v.play();
+  const d=new BarcodeDetector({formats:['qr_code']});let last='',lastT=0;
+  (async function loop(){
+    if(!stream)return;
+    try{const b=await d.detect(v);const raw=b[0]&&b[0].rawValue;
+      if(raw&&!busy&&(raw!==last||Date.now()-lastT>4000)){busy=true;last=raw;lastT=Date.now();await doCheck({qr:raw});busy=false}}catch{}
+    setTimeout(loop,350);
+  })();
+}
+function stopScan(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('scanbox').style.display='none'}
+$('scan').onclick=startScan;$('stop').onclick=stopScan;
+if(KEY)load();
+</script></body></html>

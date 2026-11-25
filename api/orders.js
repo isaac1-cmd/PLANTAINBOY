@@ -20,5 +20,5 @@ module.exports = async (req, res) => {
       tickets: o.tickets.map((t) => ({ index: t.index, code: t.code, checkedInAt: states[k++] })),
     }));
     res.json({ dbReady: dbReady(), orders: out });
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Could not load orders' }); }
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Could not load orders', detail: e.message }); }
 };
