@@ -1,0 +1,147 @@
+:root{--bg:#000;--card:#0f0f0f;--line:#222;--y:#FFC700;--o:#FF6A00;--cream:#FFF4DC;--mut:#a8a29a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--bg);color:var(--cream);font-family:'DM Sans',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.d{font-family:'Bagel Fat One','DM Sans',sans-serif;font-weight:400;line-height:1.02;letter-spacing:.5px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+section{padding:96px 0}
+.eyebrow{display:inline-block;background:var(--y);color:#000;font-weight:700;font-size:12px;letter-spacing:2px;padding:5px 14px;border-radius:99px;text-transform:uppercase;margin-bottom:16px}
+h2.d{font-size:clamp(38px,6vw,68px);margin-bottom:18px}
+h2 em{font-style:normal;color:var(--y)}
+.btn{display:inline-block;background:var(--y);color:#000;font-weight:700;padding:15px 30px;border-radius:99px;border:0;font:700 16px 'DM Sans';cursor:pointer;transition:.2s;box-shadow:0 6px 0 #b38b00}
+.btn:hover{transform:translateY(2px);box-shadow:0 4px 0 #b38b00}
+.btn.o{background:var(--o);box-shadow:0 6px 0 #a83f00}.btn.o:hover{box-shadow:0 4px 0 #a83f00}
+.btn.ghost{background:transparent;color:var(--cream);box-shadow:none;border:2px solid var(--cream)}
+.btn:disabled{opacity:.6;cursor:wait}
+/* nav */
+nav{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+nav img{height:50px;width:50px;object-fit:cover;border-radius:10px}
+.links{display:flex;gap:28px;align-items:center;font-weight:500}
+.links a:not(.btn):hover{color:var(--y)}
+.links .btn{padding:10px 22px;font-size:14px;box-shadow:none}
+.burger{display:none;background:none;border:0;color:var(--cream);font-size:30px;cursor:pointer}
+/* hero */
+.hero{min-height:100vh;display:flex;align-items:center;text-align:center;position:relative;padding:120px 0 70px;background:linear-gradient(180deg,rgba(0,0,0,.55),#000 96%),url(img/concert.jpg) center/cover}
+.hero img.logo{width:min(440px,78vw);margin:0 auto 4px;mix-blend-mode:lighten}
+.hero p.sub{font-size:clamp(17px,2.4vw,22px);max-width:640px;margin:0 auto 28px;color:var(--cream)}
+.meta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+.meta span{border:1.5px solid #444;border-radius:99px;padding:8px 18px;font-weight:500;background:rgba(0,0,0,.5)}
+.count{display:flex;gap:14px;justify-content:center;margin-bottom:38px}
+.count div{background:var(--y);color:#000;border-radius:20px;width:clamp(68px,17vw,118px);padding:14px 0 10px;box-shadow:0 7px 0 #b38b00}
+.count div:nth-child(even){background:var(--o);box-shadow:0 7px 0 #a83f00}
+.count b{display:block;font-family:'Bagel Fat One';font-weight:400;font-size:clamp(34px,8vw,64px);line-height:1}
+.count small{font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+/* marquee */
+.marq{background:var(--y);color:#000;overflow:hidden;white-space:nowrap;padding:16px 0;transform:rotate(-1.2deg);margin:-14px -20px}
+.marq div{display:inline-block;animation:m 28s linear infinite;font-family:'Bagel Fat One';font-size:26px}
+.marq span{margin:0 22px}.marq span:nth-child(3n){color:var(--o)}
+@keyframes m{to{transform:translateX(-50%)}}
+/* about */
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.two p{color:#d8d2c4;font-size:18px;margin-bottom:16px}
+.pics{position:relative;height:460px}
+.pics img{position:absolute;object-fit:cover;border-radius:24px;border:4px solid var(--y)}
+.pics img:first-child{width:68%;height:300px;top:0;left:0;transform:rotate(-3deg)}
+.pics img:last-child{width:62%;height:270px;bottom:0;right:0;transform:rotate(3deg);border-color:var(--o)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;text-align:center}
+.stats b{display:block;font-family:'Bagel Fat One';font-weight:400;font-size:44px;color:var(--y)}
+.stats span{color:var(--mut);font-size:14px}
+/* lineup / what to expect */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;transition:.25s}
+.card:hover{transform:translateY(-6px);border-color:var(--y)}
+.card img{height:220px;width:100%;object-fit:cover}
+.card div{padding:22px}.card h3{font-family:'Bagel Fat One';font-weight:400;font-size:26px;color:var(--y);margin-bottom:6px}
+.card p{color:var(--mut)}
+/* vendors */
+.vend{background:linear-gradient(180deg,#000,#120a00 50%,#000)}
+.vform{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:28px}
+.vform h3{font-family:'Bagel Fat One';font-weight:400;font-size:28px;margin-bottom:14px;color:var(--y)}
+input,select,textarea{width:100%;background:#000;border:1.5px solid #333;color:var(--cream);border-radius:14px;padding:13px 15px;font:500 16px 'DM Sans';margin-bottom:12px}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--y)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.msg{font-size:14px;min-height:20px;margin-top:6px}.msg.err{color:#ff6b6b}.msg.ok{color:#7be07b}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+.chips span{background:#1a1a1a;border:1px solid #333;border-radius:99px;padding:8px 16px;font-weight:500}
+/* tickets */
+.tix{background:linear-gradient(rgba(0,0,0,.88),rgba(0,0,0,.94)),url(img/tickets.jpg) center/cover}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:38px}
+.tick{background:var(--cream);color:#000;border-radius:26px;padding:28px 26px;position:relative;display:flex;flex-direction:column;transition:.25s}
+.tick:hover{transform:translateY(-6px) rotate(-.6deg)}
+.tick::before,.tick::after{content:'';position:absolute;top:96px;width:26px;height:26px;background:#050505;border-radius:50%}
+.tick::before{left:-13px}.tick::after{right:-13px}
+.tick .tag{align-self:flex-start;background:#000;color:var(--y);font-size:11px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:99px;text-transform:uppercase}
+.tick h3{font-family:'Bagel Fat One';font-weight:400;font-size:34px;margin:12px 0 0}
+.tick .price{font-family:'Bagel Fat One';font-size:38px;color:var(--o);padding-bottom:16px;border-bottom:2.5px dashed #000;margin-bottom:16px}
+.tick ul{list-style:none;flex:1;margin-bottom:22px}.tick li{padding:4px 0 4px 24px;position:relative;font-weight:500}
+.tick li::before{content:'';position:absolute;left:0;font-weight:900;color:var(--o)}
+.tick .btn{background:#000;color:var(--y);box-shadow:0 5px 0 #444;text-align:center}
+.tick.hot{background:var(--y)}.tick.hot .price{color:#000}.tick.hot li::before{color:#000}
+.tick.hot .btn{color:#fff}
+/* partners */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}
+.pgrid div{aspect-ratio:2/1;border:2px dashed #333;border-radius:20px;display:grid;place-items:center;color:#555;font-family:'Bagel Fat One';font-size:20px;text-align:center;padding:10px}
+.pgrid img{max-height:70%;object-fit:contain}
+/* venue/faq */
+details{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px;margin-bottom:12px}
+summary{cursor:pointer;font-weight:700;font-size:18px}details p{color:var(--mut);margin-top:10px}
+footer{border-top:1px solid var(--line);padding:50px 0 34px;text-align:center;color:var(--mut)}
+footer img{width:130px;margin:0 auto 14px;border-radius:16px}
+footer .soc{display:flex;gap:22px;justify-content:center;margin:16px 0;font-weight:500;color:var(--cream)}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:none;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.modal.on{display:flex}
+.box{background:#0d0d0d;border:2px solid var(--y);border-radius:28px;max-width:480px;width:100%;padding:30px;position:relative;margin:auto}
+.box h3{font-family:'Bagel Fat One';font-weight:400;font-size:30px;color:var(--y)}
+.x{position:absolute;right:18px;top:12px;background:none;border:0;color:#fff;font-size:32px;cursor:pointer}
+.sum{background:#1a1a1a;border-radius:16px;padding:14px 16px;margin:6px 0 16px;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.sum b{color:var(--y);font-size:22px}
+label{font-size:13px;font-weight:700;color:var(--mut);display:block;margin-bottom:5px}
+.qty{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.qty button{width:42px;height:42px;border-radius:50%;border:2px solid var(--y);background:none;color:var(--y);font-size:22px;cursor:pointer}
+.qty b{font-size:22px;min-width:26px;text-align:center}
+.reveal{opacity:0;transform:translateY(30px);transition:.7s}.reveal.in{opacity:1;transform:none}
+@media(max-width:900px){
+ .links{position:fixed;inset:68px 0 auto 0;background:#000;flex-direction:column;padding:26px;gap:20px;border-bottom:1px solid var(--line);display:none}
+ .links.on{display:flex}.burger{display:block}
+ .two,.cards,.tgrid{grid-template-columns:1fr}.pics{height:380px}
+ .stats,.pgrid{grid-template-columns:1fr 1fr}section{padding:70px 0}
+}
+
+.spons{display:flex;align-items:center;justify-content:center;gap:14px;margin:-8px auto 34px}
+.spons small{color:var(--mut);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.spons img{height:78px;width:78px;object-fit:cover;border-radius:16px;border:1.5px solid #6b5420}
+.pgrid .lead{grid-column:span 2;aspect-ratio:auto;border:2px solid var(--y);background:#000;flex-direction:column;gap:8px;padding:16px;display:flex}
+.pgrid .lead img{max-height:170px;border-radius:14px}
+.pgrid .pl{font:700 11px 'DM Sans';letter-spacing:2px;text-transform:uppercase;color:var(--y)}
+@media(max-width:900px){.pgrid .lead{grid-column:span 2}}
+.two-logos{display:flex;gap:12px;justify-content:center}.pgrid .two-logos img{max-height:150px;width:auto;max-width:48%}
+
+.spons img:nth-of-type(2){width:auto;height:120px;object-fit:contain}
+.pgrid .lead .two-logos{align-items:center}
+.pgrid .two-logos img{max-height:210px;max-width:48%;width:auto;object-fit:contain}
+.tick li::before{content:'';width:8px;height:8px;background:var(--o);border-radius:50%;top:13px;left:4px;font-size:0}
+.tick.hot li::before{background:#000}
+.burger{font:700 14px 'DM Sans';letter-spacing:1px;text-transform:uppercase}
+
+.tix{background:linear-gradient(rgba(0,0,0,.86),rgba(0,0,0,.94)),url(img/tickets.jpg) center/cover}
+.tixban{margin-top:30px;height:170px;border-radius:22px;overflow:hidden;border:1px solid #333}
+.tixban img{width:100%;height:100%;object-fit:cover}
+.btn,.btn.o,.count div,.count div:nth-child(even){box-shadow:none}.btn:hover{transform:none;filter:brightness(1.1)}
+.tick .btn{box-shadow:none}.tick:hover{transform:translateY(-4px)}
+
+.pgrid .org{background:#000;border:1px solid #333;padding:0;overflow:hidden}.pgrid .org img{max-height:100%;width:100%;object-fit:cover}
+.orgf{display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px 0}.orgf small{letter-spacing:2px;text-transform:uppercase;font-size:11px}.orgf img{height:90px;width:auto;border-radius:12px}
+
+.pgrid{grid-template-columns:repeat(3,1fr);max-width:900px;margin-left:auto;margin-right:auto}
+.pgrid div,.pgrid .org,.pgrid .lead{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#000;border:1px solid #333;border-radius:20px;padding:0;overflow:hidden;grid-column:auto}
+.pgrid div img,.pgrid .org img{width:100%;height:100%;max-height:none;max-width:none;object-fit:contain;border-radius:0}
+@media(max-width:600px){.pgrid{grid-template-columns:1fr 1fr 1fr;gap:8px}}
+
+.wa{position:fixed;right:18px;bottom:18px;z-index:90;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.5);transition:transform .2s}
+.wa:hover{transform:scale(1.08)}
